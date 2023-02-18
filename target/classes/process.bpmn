@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+  <bpmn:process id="leave-workflow-engine-process" name="Leave Workflow Engine Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="welcome-task" />
+    <bpmn:endEvent id="EndEvent_0x6ir2l">
+      <bpmn:incoming>Flow_009v80d</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="welcome-task" targetRef="enter-location-detail" />
+    <bpmn:sequenceFlow id="Flow_009v80d" sourceRef="script-task" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:sequenceFlow id="Flow_0ub5dj2" sourceRef="enter-location-detail" targetRef="decide-on-location" />
+    <bpmn:serviceTask id="welcome-task" name="Welcome Task" camunda:class="com.example.workflow.WelcomeTasks">
+      <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="enter-location-detail" name="Enter Location Detail">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="location" label="Whare to go?" type="string" />
+          <camunda:formField id="timeOfDay" label="Time Of Day" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ub5dj2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:scriptTask id="script-task" name="Script Task" scriptFormat="js">
+      <bpmn:incoming>Flow_0t33b4x</bpmn:incoming>
+      <bpmn:outgoing>Flow_009v80d</bpmn:outgoing>
+      <bpmn:script>print(location)
+print(time)
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_04j1ita" sourceRef="decide-on-location" targetRef="viewFlightTime" />
+    <bpmn:businessRuleTask id="decide-on-location" name="Decide on Location" camunda:resultVariable="time" camunda:decisionRef="decideOnLocation" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_0ub5dj2</bpmn:incoming>
+      <bpmn:outgoing>Flow_04j1ita</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sendTask id="send-task" name="Send Task" camunda:class="com.example.workflow.SendTasks">
+      <bpmn:incoming>Flow_03b5o3n</bpmn:incoming>
+      <bpmn:outgoing>Flow_0t33b4x</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0t33b4x" sourceRef="send-task" targetRef="script-task" />
+    <bpmn:sequenceFlow id="Flow_03b5o3n" sourceRef="viewFlightTime" targetRef="send-task" />
+    <bpmn:userTask id="viewFlightTime" name="View flight time">
+      <bpmn:incoming>Flow_04j1ita</bpmn:incoming>
+      <bpmn:outgoing>Flow_03b5o3n</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="leave-workflow-engine-process">
+      <bpmndi:BPMNEdge id="Flow_04j1ita_di" bpmnElement="Flow_04j1ita">
+        <di:waypoint x="410" y="310" />
+        <di:waypoint x="440" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ub5dj2_di" bpmnElement="Flow_0ub5dj2">
+        <di:waypoint x="280" y="310" />
+        <di:waypoint x="310" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_009v80d_di" bpmnElement="Flow_009v80d">
+        <di:waypoint x="770" y="350" />
+        <di:waypoint x="770" y="392" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t33b4x_di" bpmnElement="Flow_0t33b4x">
+        <di:waypoint x="670" y="310" />
+        <di:waypoint x="720" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_16gzt2m_di" bpmnElement="SequenceFlow_16gzt2m">
+        <di:waypoint x="230" y="227" />
+        <di:waypoint x="230" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
+        <di:waypoint x="230" y="118" />
+        <di:waypoint x="230" y="147" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03b5o3n_di" bpmnElement="Flow_03b5o3n">
+        <di:waypoint x="540" y="310" />
+        <di:waypoint x="570" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="212" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qtdri5_di" bpmnElement="welcome-task">
+        <dc:Bounds x="180" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hgh7w0_di" bpmnElement="enter-location-detail">
+        <dc:Bounds x="180" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13vexa7_di" bpmnElement="decide-on-location">
+        <dc:Bounds x="310" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qqdhmy_di" bpmnElement="script-task">
+        <dc:Bounds x="720" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03mszbb_di" bpmnElement="send-task">
+        <dc:Bounds x="570" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1fxgwo5_di" bpmnElement="viewFlightTime">
+        <dc:Bounds x="440" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
+        <dc:Bounds x="752" y="392" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
